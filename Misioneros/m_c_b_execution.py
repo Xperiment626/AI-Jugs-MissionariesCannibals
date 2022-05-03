@@ -20,9 +20,10 @@ def execute(mWS = 3, cWS = 3, boatState = 0, mES = 0, cES = 0):
     # print(F"INITIAL STATE: {initialState}")
     while states[-1] != finalState :
         newState = boat.move(r, missionaries, cannibals)
-        
         if newState not in states:
             states.append(newState)
+        if len(states) > 13:
+            break
     
     return states
     
@@ -37,7 +38,7 @@ def main(args):
     big jug initial state: 0
     short jug initial state: 0
     Ejemplo:
-    python m_c_b_execution.py 100 3 3 0 0 0
+    python m_c_b_execution.py 10000 3 3 0 0 0
     """
     answers = []
     bestAnswer = None
@@ -49,10 +50,12 @@ def main(args):
         mES = int(args[4])
         cES = int(args[5])
         
-        for i in range(simulations):
+        # for i in range(simulations):
+        while True:
             answer = execute(mWS, cWS, boatState, mES, cES)
-            if answer not in answers:
+            if len(answer) <= 11:
                 answers.append(answer)
+                break
         
         bestAnswer = min(answers, key = lambda x: len(x))
         

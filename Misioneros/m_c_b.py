@@ -25,8 +25,7 @@ class Missionary:
         return 0
         
     def getOff(self, r, bcs):
-        return r.randint(0, bcs) if bcs > 0 else 0
-        
+        return r.randint(r.randint(0,1), bcs) if bcs > 0 else 0 
 class Cannibal:
     def __init__(self, westState = 3, eastState = 0):
         self.westState = westState
@@ -83,30 +82,32 @@ class Boat:
                 auxces = cges - cl
                 validSum = (ml + self.mLoad) + (cl + self.cLoad)
                 
-                if ((validSum > 0 and validSum <= 2) and
-                    (((auxmes >= auxces or auxmes == 0) and (auxces >= 0 or auxmes >= 0)) or
+                if ((validSum > 0 and validSum <= 2) and (ml > 0 or cl > 0) and
+                    ((auxmes >= auxces or (auxmes == 0 and auxces >= 0)) or
                     (auxmes >= auxces and auxmes >= 0 and auxces >= 0))):
-                    # print("UPLOAD")
                     self.mLoad += ml
                     self.cLoad += cl
                     self.load = self.mLoad + self.cLoad
                     m.setEastState(auxmes)
                     c.setEastState(auxces)
+                if self.getLoad() > 0:
+                    self.setLocation(0)
             else:
                 mgws = m.getWestState()
                 cgws = c.getWestState()
                 auxmws = mgws - ml
                 auxcws = cgws - cl
                 validSum = (ml + self.mLoad) + (cl + self.cLoad)
-                if ((validSum > 0 and validSum <= 2) and
-                    (((auxmws >= auxcws or auxmws == 0) and (auxcws >= 0 or auxmws >= 0)) or
+                if ((validSum > 0 and validSum <= 2) and (ml > 0 or cl > 0) and
+                    ((auxmws >= auxcws or (auxmws == 0 and auxcws >= 0)) or
                     (auxmws >= auxcws and auxmws >= 0 and auxcws >= 0))):
-                    # print("UPLOAD")
                     self.mLoad += ml
                     self.cLoad += cl
                     self.load = self.mLoad + self.cLoad
                     m.setWestState(auxmws)
                     c.setWestState(auxcws)
+                if self.getLoad() > 0:
+                    self.setLocation(1)
                     
     def downloadPeople(self, r, m, c):
         if self.getLoad() > 0:
@@ -120,15 +121,14 @@ class Boat:
                 validSum = (self.mLoad - md) + (self.cLoad - cd)
                 
                 if ((validSum >= 0 and validSum <= 2) and (md > 0 or cd > 0) and
-                    ((auxmes >= auxces or auxmes == 0) or
-                    (auxmes >= auxces))):
-                    # print("DOWNLOAD")
-                    # print(md, cd)
+                    (auxmes >= auxces or (auxmes == 0 and cd > 0))):
                     self.mLoad -= md
                     self.cLoad -= cd
                     self.load = self.mLoad + self.cLoad
                     m.setEastState(auxmes)
                     c.setEastState(auxces)
+                if self.getLoad() > 0:
+                    self.setLocation(0)
             else:
                 mgws = m.getWestState()
                 cgws = c.getWestState()
@@ -137,15 +137,14 @@ class Boat:
                 validSum = (self.mLoad - md) + (self.cLoad - cd)
                 
                 if ((validSum >= 0 and validSum <= 2) and (md > 0 or cd > 0) and
-                    ((auxmws >= auxcws or auxmws == 0) or
-                    (auxmws >= auxcws))):
-                    # print("DOWNLOAD")
-                    # print(md, cd)
+                    (auxmws >= auxcws or (auxmws == 0 and cd > 0))):
                     self.mLoad -= md
                     self.cLoad -= cd
                     self.load = self.mLoad + self.cLoad
                     m.setWestState(auxmws)
                     c.setWestState(auxcws)
+                if self.getLoad() > 0:
+                    self.setLocation(1)
             
     def move(self, r, m, c):
         # self.uploadPeople(r, m, c)
@@ -157,11 +156,11 @@ class Boat:
         else:
             self.downloadPeople(r, m, c)
             
-        if self.getLoad() > 0:
-            if self.getLocation():
-                self.setLocation(0)
-            else:
-                self.setLocation(1)
+        # if self.getLoad() > 0:
+        #     if self.getLocation():
+        #         self.setLocation(0)
+        #     else:
+        #         self.setLocation(1)
         
         return (m.getWestState(),
                 c.getWestState(),
