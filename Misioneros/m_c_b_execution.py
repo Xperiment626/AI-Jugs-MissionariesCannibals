@@ -50,12 +50,20 @@ def main(args):
         mES = int(args[4])
         cES = int(args[5])
         
+        firstState = (mWS, cWS, boatState, mES, cES)
+        
         # for i in range(simulations):
         while True:
             answer = execute(mWS, cWS, boatState, mES, cES)
             if len(answer) <= 11:
                 answers.append(answer)
-                break
+            
+            if firstState == (3,3,0,0,0):
+                if len(answers) == 1:
+                    break
+            else:
+                if len(answers) == 100:
+                    break
         
         bestAnswer = min(answers, key = lambda x: len(x))
         
