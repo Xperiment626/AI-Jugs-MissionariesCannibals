@@ -34,10 +34,11 @@ def main(args):
     big jug initial state: 0
     short jug initial state: 0
     Ejemplo:
-    python jug_execution.py 100 4 3 0 0
+    python jug_execution.py 1000 4 3 0 0
     """
     answers = []
     bestAnswer = None
+    
     if len(args) == 5:
         
         simulations = int(args[0])
